@@ -1,12 +1,12 @@
-# lotto-rand
+# lottorand
 
-lotto-rand is an CLI program that generates random lottery numbers.
+lottorand is an CLI program that generates random lottery numbers.
 
 ## Quickstart
 
 ```sh
-$ lotto-rand -h
-Usage: lotto-rand [OPTIONS] [N_LOTTOS]
+$ lottorand -h
+Usage: lottorand [OPTIONS] [N_LOTTOS]
 
 Arguments:
   [N_LOTTOS]  Number of lottery to be generated [default: 10]
