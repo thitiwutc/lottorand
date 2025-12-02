@@ -4,7 +4,7 @@ lotto-rand is an CLI program that generates random lottery numbers.
 
 ## Quickstart
 
-```
+```sh
 $ lotto-rand -h
 Usage: lotto-rand [OPTIONS] [N_LOTTOS]
 
