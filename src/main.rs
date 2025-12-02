@@ -1,5 +1,5 @@
 use clap::{Parser, command};
-use rand::{Rng, seq::SliceRandom};
+use rand::seq::SliceRandom;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
