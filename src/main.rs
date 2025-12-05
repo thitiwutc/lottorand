@@ -66,7 +66,7 @@ fn main() {
 
         // Create string with capacity of lottery numbers, spaces, and newlines.
         let mut sb = String::with_capacity(
-            Into::<usize>::into(args.n_lottos * args.n_digits) // Lotto number count.
+            Into::<usize>::into(args.n_lottos as u16 * args.n_digits as u16) // Lotto number count.
                 + Into::<usize>::into(args.n_lottos - 1), // Space count and new line.
         );
 
