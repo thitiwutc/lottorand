@@ -4,6 +4,8 @@ use clap::{Parser, command};
 use rand::seq::SliceRandom;
 use terminal_size::{Width, terminal_size};
 
+const MAXIMUM_LOTTO_NUM_PER_LINE: u8 = 25;
+
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
@@ -35,9 +37,10 @@ fn main() {
     if stdout.is_terminal()
         && let Some((Width(w), _)) = terminal_size()
     {
-        // Use 60% of terminal width.
+        // Calculate number of lotto num per line but not greater than the maximum.
         let items_per_line =
-            (Into::<f32>::into(w / Into::<u16>::into(args.n_digits)) * 0.6).ceil() as usize;
+            ((Into::<f32>::into(w / Into::<u16>::into(args.n_digits)) * 0.6).ceil() as usize)
+                .min(MAXIMUM_LOTTO_NUM_PER_LINE.into());
 
         // Create string with capacity of lottery numbers, spaces, and newlines.
         let mut sb = String::with_capacity(
