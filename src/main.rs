@@ -1,20 +1,23 @@
-use std::io::{self, IsTerminal};
+use std::{
+    collections::HashMap,
+    io::{self, IsTerminal},
+};
 
 use clap::{Parser, command};
-use rand::seq::SliceRandom;
+use rand::{Rng, seq::SliceRandom};
 use terminal_size::{Width, terminal_size};
 
 const MAXIMUM_LOTTO_NUM_PER_LINE: u8 = 25;
 
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(version, long_about = None)]
 struct Args {
     /// Number of lottery to be generated.
     #[arg(default_value_t = 10)]
     n_lottos: u8,
 
     /// Number of lottery digits.
-    #[arg(short, long, default_value_t = 6)]
+    #[arg(short, long, default_value_t = 6, value_parser = clap::value_parser!(u8).range(1..=19))]
     n_digits: u8,
 }
 
@@ -22,15 +25,34 @@ fn main() {
     let args = Args::parse();
 
     let mut rng = rand::rng();
-    let mut all_possible_nums = (0..(10_u32.pow(args.n_digits.into()))).collect::<Vec<u32>>();
+    let mut lotto_nums: Vec<String>;
 
-    all_possible_nums.shuffle(&mut rng);
+    // For smaller n_digits use Fisher–Yates shuffle
+    if args.n_digits <= 6 {
+        let mut all_possible_nums = (0..(10_u32.pow(args.n_digits.into()))).collect::<Vec<u32>>();
 
-    let mut lotto_nums = all_possible_nums[0..(args.n_lottos.into())]
-        .to_vec()
-        .iter()
-        .map(|val| format!("{val:0width$}", width = args.n_digits.into()))
-        .collect::<Vec<String>>();
+        all_possible_nums.shuffle(&mut rng);
+
+        lotto_nums = all_possible_nums[0..(args.n_lottos.into())]
+            .to_vec()
+            .iter()
+            .map(|val| format!("{val:0width$}", width = args.n_digits.into()))
+            .collect::<Vec<String>>();
+    } else {
+        // For bigger n_digits use hash map.
+        let mut generated: HashMap<u64, bool> = HashMap::new();
+
+        while generated.len() < args.n_lottos.into() {
+            let rand_num = rng.random_range(0..=(10_u64.pow(args.n_digits.into())));
+            generated.insert(rand_num, true);
+        }
+
+        lotto_nums = generated
+            .keys()
+            .map(|val| format!("{val:0width$}", width = args.n_digits.into()))
+            .collect::<Vec<String>>();
+    }
+
     lotto_nums.sort();
 
     let stdout = io::stdout();
