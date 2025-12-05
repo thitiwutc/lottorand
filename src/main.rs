@@ -2,7 +2,7 @@ use std::io::{self, IsTerminal};
 
 use clap::{Parser, command};
 use rand::seq::SliceRandom;
-use terminal_size::{Height, Width, terminal_size};
+use terminal_size::{Width, terminal_size};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
