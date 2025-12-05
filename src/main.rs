@@ -1,5 +1,8 @@
+use std::io::{self, IsTerminal};
+
 use clap::{Parser, command};
 use rand::seq::SliceRandom;
+use terminal_size::{Height, Width, terminal_size};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -28,5 +31,36 @@ fn main() {
         .collect::<Vec<String>>();
     lotto_nums.sort();
 
-    println!("{}", lotto_nums.join("\n"))
+    let stdout = io::stdout();
+    if stdout.is_terminal()
+        && let Some((Width(w), _)) = terminal_size()
+    {
+        // Use 60% of terminal width.
+        let items_per_line =
+            (Into::<f32>::into(w / Into::<u16>::into(args.n_digits)) * 0.6).ceil() as usize;
+
+        // Create string with capacity of lottery numbers, spaces, and newlines.
+        let mut sb = String::with_capacity(
+            Into::<usize>::into(args.n_lottos * args.n_digits) // Lotto number count.
+                + Into::<usize>::into(args.n_lottos - 1), // Space count and new line.
+        );
+
+        for (i, lotto_num) in lotto_nums.iter().enumerate() {
+            if i > 0 {
+                // Add newline to before the first lotto num of each line.
+                if i % items_per_line == 0 {
+                    sb.push('\n');
+                } else {
+                    // Add space after each lotto num.
+                    sb.push(' ');
+                }
+            }
+
+            sb.push_str(&lotto_num);
+        }
+
+        println!("{sb}")
+    } else {
+        println!("{}", lotto_nums.join("\n"))
+    }
 }
