@@ -42,9 +42,15 @@ fn main() {
         // For bigger n_digits use hash map.
         let mut generated: HashMap<u64, bool> = HashMap::new();
 
-        while generated.len() < args.n_lottos.into() {
+        // Max number of random to prevent possible but unlikely perpetual loop.
+        let max_rand_times = (f32::from(args.n_lottos) * 1.5).round() as i32;
+        let mut rand_times = 0;
+
+        while generated.len() < args.n_lottos.into() && rand_times < max_rand_times {
             let rand_num = rng.random_range(0..=(10_u64.pow(args.n_digits.into())));
             generated.insert(rand_num, true);
+
+            rand_times += 1;
         }
 
         lotto_nums = generated
