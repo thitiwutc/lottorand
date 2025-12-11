@@ -27,7 +27,7 @@ fn main() {
     let mut rng = rand::rng();
     let mut lotto_nums: Vec<String>;
 
-    // For smaller n_digits use Fisher–Yates shuffle
+    // For smaller n_digits, shuffle
     if args.n_digits <= 6 {
         let mut all_possible_nums = (0..(10_u32.pow(args.n_digits.into()))).collect::<Vec<u32>>();
 
